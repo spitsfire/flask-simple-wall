@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>The Wall</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <h1 class="navbar-brand">The Wall</h1>
+        <span class="navbar-text">
+            Welcome, {{ session['welcome'] }}
+            <a href="logout" class="badge badge-info">Log out</a>
+        </span>
+    </nav>
+    <div class="row">
+        <div class="col-lg-6 col-sm-12">
+            <h3>{{ recip_count }} Message(s) for you!</h3>
+            {% for msg in messages %}
+            <p>{{msg.FirstName}} at {{msg.CreatedAt}}</p>
+            <p>{{msg.Content}}</p>
+            <a href="/remove/message/{{msg.Id}}" class="badge badge-danger">Delete</a>
+            {% endfor %}
+        </div>
+        <div class="col-lg-6 col-sm-12">
+            <h3>Send a Message</h3>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <p>{{message}}</p>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <p>You have sent a total of {{ auth_count }} messages so far.</p>
+            {% for user in users %}
+            {% if user.Id != session['userid'] %}
+            <form action="create" method="post">
+                <label for="message_content">{{user.FirstName}}</label>
+                <textarea name="message_content" class="form-control w-50" cols="3" rows="3"></textarea>
+                <input type="hidden" name="recipient_id" value={{user.Id}}>
+                <button class="btn btn-success" type="submit">Send</button>
+            </form>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>
